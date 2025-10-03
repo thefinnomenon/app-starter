@@ -48,6 +48,12 @@ export default {
     scheme: getAppScheme(),
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
+    runtimeVersion: {
+      policy: 'appVersion',
+    },
+    updates: {
+      url: `https://u.expo.dev/${process.env.EAS_PROJECT_ID || 'YOUR_PROJECT_ID'}`,
+    },
     ios: {
       supportsTablet: true,
       bundleIdentifier: getBundleIdentifier(),
@@ -88,6 +94,9 @@ export default {
     },
     extra: {
       appEnv: process.env.APP_ENV || 'development',
+      eas: {
+        projectId: '477d8efe-85bc-4b87-a7a9-46c9cf3e681e',
+      },
     },
   },
 }

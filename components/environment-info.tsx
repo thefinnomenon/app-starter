@@ -1,8 +1,8 @@
-import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import { env, isDevelopment, isStaging, isProduction } from '@/lib/env'
 import { ThemedText } from '@/components/themed-text'
 import { ThemedView } from '@/components/themed-view'
+import { env, isDevelopment, isProduction, isStaging } from '@/lib/env'
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
 export function EnvironmentInfo() {
   const getBadgeColor = () => {
@@ -28,13 +28,6 @@ export function EnvironmentInfo() {
         <Text style={styles.badgeText}>{getBadgeText()}</Text>
       </View>
       <ThemedText style={styles.envText}>Environment: {env.APP_ENV}</ThemedText>
-      <ThemedText style={styles.apiText}>API: {env.API_URL}</ThemedText>
-      <ThemedText style={styles.apiText}>
-        Debug Mode: {env.ENABLE_DEBUG_MODE ? 'ON' : 'OFF'}
-      </ThemedText>
-      <ThemedText style={styles.apiText}>
-        Analytics: {env.ENABLE_ANALYTICS ? 'ON' : 'OFF'}
-      </ThemedText>
     </ThemedView>
   )
 }

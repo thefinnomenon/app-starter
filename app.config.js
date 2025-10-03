@@ -88,12 +88,6 @@ export default {
     },
     extra: {
       appEnv: process.env.APP_ENV || 'development',
-      appName: process.env.APP_NAME || getAppName(),
-      apiUrl: process.env.API_URL,
-      enableAnalytics: process.env.ENABLE_ANALYTICS || 'false',
-      enableMaintenanceMode: process.env.ENABLE_MAINTENANCE_MODE || 'false',
-      enableDebugMode: process.env.ENABLE_DEBUG_MODE || 'false',
-      logLevel: process.env.LOG_LEVEL || 'info',
     },
   },
 }

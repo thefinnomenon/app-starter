@@ -1,0 +1,99 @@
+import 'dotenv/config'
+
+const IS_DEV = process.env.APP_ENV === 'development'
+const IS_STAGING = process.env.APP_ENV === 'staging'
+
+const getAppName = () => {
+  if (IS_DEV) return 'App Starter (Dev)'
+  if (IS_STAGING) return 'App Starter (Staging)'
+  return 'App Starter'
+}
+
+const getAppSlug = () => {
+  if (IS_DEV) return 'app-starter-dev'
+  if (IS_STAGING) return 'app-starter-staging'
+  return 'app-starter'
+}
+
+const getAppScheme = () => {
+  if (IS_DEV) return 'appstarter-dev'
+  if (IS_STAGING) return 'appstarter-staging'
+  return 'appstarter'
+}
+
+const getAppIcon = () => {
+  // You can use different icons for different environments
+  return './assets/images/icon.png'
+}
+
+const getBundleIdentifier = () => {
+  if (IS_DEV) return 'com.appstarter.dev'
+  if (IS_STAGING) return 'com.appstarter.staging'
+  return 'com.appstarter'
+}
+
+const getAndroidPackage = () => {
+  if (IS_DEV) return 'com.appstarter.dev'
+  if (IS_STAGING) return 'com.appstarter.staging'
+  return 'com.appstarter'
+}
+
+export default {
+  expo: {
+    name: getAppName(),
+    slug: getAppSlug(),
+    version: '1.0.0',
+    orientation: 'portrait',
+    icon: getAppIcon(),
+    scheme: getAppScheme(),
+    userInterfaceStyle: 'automatic',
+    newArchEnabled: true,
+    ios: {
+      supportsTablet: true,
+      bundleIdentifier: getBundleIdentifier(),
+    },
+    android: {
+      package: getAndroidPackage(),
+      adaptiveIcon: {
+        backgroundColor: '#E6F4FE',
+        foregroundImage: './assets/images/android-icon-foreground.png',
+        backgroundImage: './assets/images/android-icon-background.png',
+        monochromeImage: './assets/images/android-icon-monochrome.png',
+      },
+      edgeToEdgeEnabled: true,
+      predictiveBackGestureEnabled: false,
+    },
+    web: {
+      output: 'static',
+      favicon: './assets/images/favicon.png',
+    },
+    plugins: [
+      'expo-router',
+      [
+        'expo-splash-screen',
+        {
+          image: './assets/images/splash-icon.png',
+          imageWidth: 200,
+          resizeMode: 'contain',
+          backgroundColor: '#ffffff',
+          dark: {
+            backgroundColor: '#000000',
+          },
+        },
+      ],
+    ],
+    experiments: {
+      typedRoutes: true,
+      reactCompiler: true,
+    },
+    extra: {
+      appEnv: process.env.APP_ENV || 'development',
+      appName: process.env.APP_NAME || getAppName(),
+      apiUrl: process.env.API_URL,
+      enableAnalytics: process.env.ENABLE_ANALYTICS || 'false',
+      enableMaintenanceMode: process.env.ENABLE_MAINTENANCE_MODE || 'false',
+      enableDebugMode: process.env.ENABLE_DEBUG_MODE || 'false',
+      logLevel: process.env.LOG_LEVEL || 'info',
+    },
+  },
+}

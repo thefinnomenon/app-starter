@@ -32,6 +32,8 @@ yarn-error.*
 
 # local env files
 .env*.local
+# Note: .env.development, .env.staging, .env.production are tracked
+# Only ignore .env.local files which contain sensitive local overrides
 
 # typescript
 *.tsbuildinfo

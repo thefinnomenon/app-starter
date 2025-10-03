@@ -70,6 +70,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
     "prettier": "^3.6.2",
+    "tsc-files": "^1.1.4",
     "typescript": "~5.9.2"
   },
   "lint-staged": {
@@ -79,7 +80,8 @@
     ],
     "*.{json,md}": [
       "prettier --write"
-    ]
+    ],
+    "*.{ts,tsx}": "tsc-files --noEmit"
   },
   "private": true
 }

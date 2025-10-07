@@ -94,7 +94,6 @@ export default {
       reactCompiler: true,
     },
     extra: {
-      appEnv: process.env.APP_ENV || 'development',
       eas: {
         projectId: '477d8efe-85bc-4b87-a7a9-46c9cf3e681e',
       },

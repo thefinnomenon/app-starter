@@ -1,9 +1,12 @@
+const appEnv = process.env.EXPO_PUBLIC_APP_ENV || 'development'
+
 export const isEnvironment = (environment: string): boolean =>
-  process.env.APP_ENV === environment
+  appEnv === environment
 export const isDevelopment = (): boolean => isEnvironment('development')
 export const isStaging = (): boolean => isEnvironment('staging')
 export const isProduction = (): boolean => isEnvironment('production')
 
 export const env = {
-  APP_ENV: process.env.APP_ENV,
+  APP_ENV: appEnv,
+  MIXPANEL_TOKEN: process.env.EXPO_PUBLIC_MIXPANEL_TOKEN || '',
 }

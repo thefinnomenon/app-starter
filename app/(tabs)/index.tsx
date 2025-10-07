@@ -75,6 +75,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { analytics } from '@/lib/analytics'
 import { useTheme } from '@/lib/contexts/ThemeContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertCircle, ChevronDown, Moon, Sun } from 'lucide-react-native'
@@ -526,6 +527,52 @@ export default function HomeScreen() {
                 }
               >
                 <Text>Promise Toast</Text>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Analytics */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Analytics</CardTitle>
+              <CardDescription>Track events with Mixpanel</CardDescription>
+            </CardHeader>
+            <CardContent className="gap-3">
+              <Button
+                onPress={() => {
+                  analytics.track('Button Clicked', {
+                    button_name: 'Track Event Example',
+                    screen: 'Home',
+                  })
+                  toast.success('Client event tracked!')
+                }}
+              >
+                <Text>Track Client Event</Text>
+              </Button>
+              <Button
+                variant="secondary"
+                onPress={async () => {
+                  try {
+                    const response = await fetch('/api/test/analytics', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        userId: 'user-123',
+                        action: 'button_press',
+                      }),
+                    })
+                    const data = await response.json()
+                    toast.success(
+                      data.tracked
+                        ? 'Server event tracked!'
+                        : 'Server event logged (dev mode)'
+                    )
+                  } catch {
+                    toast.error('Failed to track server event')
+                  }
+                }}
+              >
+                <Text>Track Server Event</Text>
               </Button>
             </CardContent>
           </Card>

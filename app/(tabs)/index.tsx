@@ -76,11 +76,33 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { useTheme } from '@/lib/contexts/ThemeContext'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertCircle, ChevronDown, Moon, Sun } from 'lucide-react-native'
 import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { toast } from 'sonner-native'
+import { z } from 'zod'
+
+const formSchema = z.object({
+  username: z.string().min(3, 'Username must be at least 3 characters'),
+  email: z.string().email('Invalid email address'),
+  age: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 18, {
+    message: 'Must be at least 18 years old',
+  }),
+  bio: z
+    .string()
+    .refine((val) => val === '' || val.length >= 10, {
+      message: 'Bio must be at least 10 characters if provided',
+    })
+    .optional(),
+  acceptTerms: z.boolean().refine((val) => val === true, {
+    message: 'You must accept the terms and conditions',
+  }),
+})
+
+type FormData = z.infer<typeof formSchema>
 
 export default function HomeScreen() {
   const [switchValue, setSwitchValue] = useState(false)
@@ -96,6 +118,28 @@ export default function HomeScreen() {
     { value: string; label: string } | undefined
   >()
   const { theme, setTheme, colorScheme } = useTheme()
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: '',
+      email: '',
+      age: '',
+      bio: '',
+      acceptTerms: false,
+    },
+  })
+
+  const onSubmit = (data: FormData) => {
+    toast.success('Form submitted successfully!')
+    console.log(data)
+    reset()
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -219,6 +263,133 @@ export default function HomeScreen() {
                 onChangeText={setInputValue}
                 aria-labelledby="email"
               />
+            </CardContent>
+          </Card>
+
+          {/* Form Validation */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Form Validation</CardTitle>
+              <CardDescription>
+                React Hook Form with Zod validation
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="gap-4">
+              <View className="gap-2">
+                <Label nativeID="username">Username</Label>
+                <Controller
+                  control={control}
+                  name="username"
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      placeholder="Enter username"
+                      value={value}
+                      onChangeText={onChange}
+                      aria-labelledby="username"
+                    />
+                  )}
+                />
+                {errors.username && (
+                  <Text className="text-destructive text-sm">
+                    {errors.username.message}
+                  </Text>
+                )}
+              </View>
+
+              <View className="gap-2">
+                <Label nativeID="form-email">Email</Label>
+                <Controller
+                  control={control}
+                  name="email"
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      placeholder="Enter email"
+                      value={value}
+                      onChangeText={onChange}
+                      aria-labelledby="form-email"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                    />
+                  )}
+                />
+                {errors.email && (
+                  <Text className="text-destructive text-sm">
+                    {errors.email.message}
+                  </Text>
+                )}
+              </View>
+
+              <View className="gap-2">
+                <Label nativeID="age">Age</Label>
+                <Controller
+                  control={control}
+                  name="age"
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      placeholder="Enter age"
+                      value={value}
+                      onChangeText={onChange}
+                      aria-labelledby="age"
+                      keyboardType="numeric"
+                    />
+                  )}
+                />
+                {errors.age && (
+                  <Text className="text-destructive text-sm">
+                    {errors.age.message}
+                  </Text>
+                )}
+              </View>
+
+              <View className="gap-2">
+                <Label nativeID="bio">Bio (optional)</Label>
+                <Controller
+                  control={control}
+                  name="bio"
+                  render={({ field: { onChange, value } }) => (
+                    <Textarea
+                      placeholder="Tell us about yourself"
+                      value={value}
+                      onChangeText={onChange}
+                      aria-labelledby="bio"
+                      numberOfLines={3}
+                    />
+                  )}
+                />
+                {errors.bio && (
+                  <Text className="text-destructive text-sm">
+                    {errors.bio.message}
+                  </Text>
+                )}
+              </View>
+
+              <View className="gap-2">
+                <View className="flex-row items-center gap-2">
+                  <Controller
+                    control={control}
+                    name="acceptTerms"
+                    render={({ field: { onChange, value } }) => (
+                      <Checkbox
+                        checked={value}
+                        onCheckedChange={onChange}
+                        aria-labelledby="accept-terms"
+                      />
+                    )}
+                  />
+                  <Label nativeID="accept-terms">
+                    Accept terms and conditions
+                  </Label>
+                </View>
+                {errors.acceptTerms && (
+                  <Text className="text-destructive text-sm">
+                    {errors.acceptTerms.message}
+                  </Text>
+                )}
+              </View>
+
+              <Button onPress={handleSubmit(onSubmit)}>
+                <Text>Submit Form</Text>
+              </Button>
             </CardContent>
           </Card>
 

@@ -20,13 +20,24 @@ export const unstable_settings = {
 }
 
 function ThemedApp() {
-  const { colorScheme } = useTheme()
+  const { theme, colorScheme } = useTheme()
   const { setColorScheme: setNativeWindColorScheme } =
     useNativeWindColorScheme()
 
   useEffect(() => {
-    setNativeWindColorScheme(colorScheme)
-  }, [colorScheme, setNativeWindColorScheme])
+    console.log(
+      'Setting NativeWind color scheme to:',
+      colorScheme,
+      'from theme:',
+      theme
+    )
+    // Force NativeWind to update by setting to undefined first if switching to system
+    if (theme === 'system') {
+      setNativeWindColorScheme(colorScheme)
+    } else {
+      setNativeWindColorScheme(colorScheme)
+    }
+  }, [colorScheme, setNativeWindColorScheme, theme])
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

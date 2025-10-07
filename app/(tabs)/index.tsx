@@ -142,7 +142,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background" style={{ flex: 1 }}>
       {/* Navigation Bar */}
       <View className="bg-card border-b border-border px-6 py-4 flex-row justify-between items-center">
         <Text className="text-2xl font-bold text-foreground">App Starter</Text>
@@ -156,9 +156,9 @@ export default function HomeScreen() {
           }}
         >
           {colorScheme === 'dark' ? (
-            <Moon size={16} className="text-foreground" />
+            <Moon size={16} color="#fafafa" />
           ) : (
-            <Sun size={16} className="text-foreground" />
+            <Sun size={16} color="#0a0a0a" />
           )}
           <Text className="ml-2 text-foreground">
             {theme === 'system' ? 'Auto' : theme === 'dark' ? 'Dark' : 'Light'}

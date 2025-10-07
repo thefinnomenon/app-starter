@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { useColorScheme } from 'react-native'
+import { Appearance } from 'react-native'
 
 type Theme = 'light' | 'dark' | 'system'
 
@@ -13,8 +13,14 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const systemColorScheme = useColorScheme()
+  const [systemColorScheme, setSystemColorScheme] = useState<'light' | 'dark'>(
+    () => {
+      const current = Appearance.getColorScheme()
+      return current === 'dark' ? 'dark' : 'light'
+    }
+  )
   const [theme, setThemeState] = useState<Theme>('system')
+  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
     // Load saved theme from storage
@@ -22,7 +28,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (savedTheme) {
         setThemeState(savedTheme as Theme)
       }
+      setIsReady(true)
     })
+  }, [])
+
+  useEffect(() => {
+    // Listen for system theme changes
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+      setSystemColorScheme(colorScheme === 'dark' ? 'dark' : 'light')
+    })
+
+    // Also check current value when component mounts or theme changes
+    const current = Appearance.getColorScheme()
+    setSystemColorScheme(current === 'dark' ? 'dark' : 'light')
+
+    return () => subscription.remove()
   }, [])
 
   const setTheme = async (newTheme: Theme) => {
@@ -30,8 +50,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     await AsyncStorage.setItem('theme', newTheme)
   }
 
-  const colorScheme =
-    theme === 'system' ? (systemColorScheme ?? 'light') : theme
+  const colorScheme = theme === 'system' ? systemColorScheme : theme
+
+  // Don't render until we've loaded the saved theme
+  if (!isReady) return null
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, colorScheme }}>

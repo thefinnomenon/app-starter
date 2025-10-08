@@ -88,6 +88,14 @@ export default {
           },
         },
       ],
+      [
+        '@sentry/react-native/expo',
+        {
+          url: 'https://sentry.io/',
+          project: 'app-starter',
+          organization: 'the-finnternet',
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,

@@ -9,4 +9,5 @@ export const isProduction = (): boolean => isEnvironment('production')
 export const env = {
   APP_ENV: appEnv,
   MIXPANEL_TOKEN: process.env.EXPO_PUBLIC_MIXPANEL_TOKEN || '',
+  SENTRY_DSN: process.env.EXPO_PUBLIC_SENTRY_DSN || '',
 }

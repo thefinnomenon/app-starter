@@ -77,6 +77,7 @@ import {
 } from '@/components/ui/tooltip'
 import { analytics } from '@/lib/analytics'
 import { useTheme } from '@/lib/contexts/ThemeContext'
+import * as Sentry from '@sentry/react-native'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertCircle, ChevronDown, Moon, Sun } from 'lucide-react-native'
 import { useState } from 'react'
@@ -573,6 +574,25 @@ export default function HomeScreen() {
                 }}
               >
                 <Text>Track Server Event</Text>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Sentry Error Tracking */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Sentry Error Tracking</CardTitle>
+              <CardDescription>Test error reporting</CardDescription>
+            </CardHeader>
+            <CardContent className="gap-3">
+              <Button
+                variant="destructive"
+                onPress={() => {
+                  Sentry.captureException(new Error('Test error from button'))
+                  toast.success('Error sent to Sentry!')
+                }}
+              >
+                <Text>Trigger Test Error</Text>
               </Button>
             </CardContent>
           </Card>

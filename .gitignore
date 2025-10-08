@@ -31,6 +31,7 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 # Note: .env.development, .env.staging, .env.production are tracked
 # Only ignore .env.local files which contain sensitive local overrides
@@ -43,3 +44,5 @@ app-example
 # generated native folders
 /ios
 /android
+
+.env.local

@@ -3,21 +3,38 @@ import {
   DefaultTheme,
   ThemeProvider as NavigationThemeProvider,
 } from '@react-navigation/native'
-import { Slot } from 'expo-router'
+import { isRunningInExpoGo } from 'expo'
+import { Slot, useNavigationContainerRef } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import './global.css'
 
 import { ThemeProvider, useTheme } from '@/lib/contexts/ThemeContext'
+import { env } from '@/lib/env'
 import { MixpanelProvider } from '@/lib/providers/MixpanelProvider'
 import { PortalHost } from '@rn-primitives/portal'
+import * as Sentry from '@sentry/react-native'
 import { useColorScheme as useNativeWindColorScheme } from 'nativewind'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { Toaster } from 'sonner-native'
 
 export const unstable_settings = {
   anchor: '(tabs)',
 }
+
+const navigationIntegration = Sentry.reactNavigationIntegration({
+  enableTimeToInitialDisplay: !isRunningInExpoGo(),
+})
+
+Sentry.init({
+  dsn: env.SENTRY_DSN,
+  tracesSampleRate: 0.5,
+  integrations: [navigationIntegration],
+  enableNativeFramesTracking: !isRunningInExpoGo(),
+  enableAppStartTracking: true,
+})
+
+console.log('Sentry DSN:', env.SENTRY_DSN)
 
 function ThemedApp() {
   const { theme, colorScheme } = useTheme()
@@ -47,7 +64,14 @@ function ThemedApp() {
   )
 }
 
-export default function RootLayout() {
+export default Sentry.wrap(function RootLayout() {
+  const ref = useNavigationContainerRef()
+  React.useEffect(() => {
+    if (ref) {
+      navigationIntegration.registerNavigationContainer(ref)
+    }
+  }, [ref])
+
   return (
     <MixpanelProvider>
       <ThemeProvider>
@@ -55,4 +79,4 @@ export default function RootLayout() {
       </ThemeProvider>
     </MixpanelProvider>
   )
-}
+})

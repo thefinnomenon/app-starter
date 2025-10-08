@@ -77,8 +77,8 @@ import {
 } from '@/components/ui/tooltip'
 import { analytics } from '@/lib/analytics'
 import { useTheme } from '@/lib/contexts/ThemeContext'
-import * as Sentry from '@sentry/react-native'
 import { zodResolver } from '@hookform/resolvers/zod'
+import * as Sentry from '@sentry/react-native'
 import { AlertCircle, ChevronDown, Moon, Sun } from 'lucide-react-native'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -593,6 +593,44 @@ export default function HomeScreen() {
                 }}
               >
                 <Text>Trigger Test Error</Text>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Email */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Email</CardTitle>
+              <CardDescription>Send test emails with Resend</CardDescription>
+            </CardHeader>
+            <CardContent className="gap-3">
+              <Button
+                onPress={() => {
+                  toast.promise(
+                    fetch('/api/email/send', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        email: 'chris@finnternet.com',
+                        username: 'Test User',
+                        loginUrl: 'https://example.com/login',
+                      }),
+                    }).then(async (response) => {
+                      const data = await response.json()
+                      if (!data.success) {
+                        throw new Error(data.error || 'Failed to send email')
+                      }
+                      return data
+                    }),
+                    {
+                      loading: 'Sending email...',
+                      success: () => 'Email sent successfully!',
+                      error: (err) => 'Failed to send email',
+                    }
+                  )
+                }}
+              >
+                <Text>Send Test Email</Text>
               </Button>
             </CardContent>
           </Card>
